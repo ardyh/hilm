@@ -4,3 +4,4 @@ __pycache__/
 cases_output/
 docs/
 mock_data/
+data/sessions/
