@@ -26,7 +26,7 @@ def setup_page():
     # Get encoded logo
     try:
         root_dir = Path(__file__).parent
-        logo_path = root_dir / "docs" / "hilm_logo5-removebg.png"
+        logo_path = root_dir / "assets" / "hilm_logo5-removebg.png"
         
         if logo_path.exists():
             encoded_logo = get_base64_encoded_image(logo_path)
