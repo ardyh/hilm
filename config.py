@@ -1,7 +1,6 @@
-import os
+import streamlit as st
 from dataclasses import dataclass
 from typing import Optional
-from dotenv import load_dotenv
 
 @dataclass
 class SnowflakeConfig:
@@ -19,20 +18,24 @@ class AppConfig:
     environment: str = "development"
 
 def load_config() -> AppConfig:
-    """Load configuration based on environment"""
-    # Load Snowflake configuration from environment variables
-    load_dotenv()
-    snowflake_config = SnowflakeConfig(
-        account=os.getenv("SNOWFLAKE_ACCOUNT", ""),
-        user=os.getenv("SNOWFLAKE_USER", ""),
-        password=os.getenv("SNOWFLAKE_PASSWORD", ""),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE", "COMPUTE_WH"),
-        role=os.getenv("SNOWFLAKE_ROLE", "ACCOUNTADMIN"),
-        database=os.getenv("SNOWFLAKE_DATABASE", "CC_QUICKSTART_CORTEX_SEARCH_DOCS"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA", "DATA")
-    )
+    """Load configuration from Streamlit secrets"""
+    try:
+        # Get Snowflake configuration from secrets.toml
+        snowflake_config = SnowflakeConfig(
+            account=st.secrets["snowflake"]["account"],
+            user=st.secrets["snowflake"]["user"],
+            password=st.secrets["snowflake"]["password"],
+            warehouse=st.secrets["snowflake"]["warehouse"],
+            role=st.secrets["snowflake"]["role"],
+            database=st.secrets["snowflake"]["database"],
+            schema=st.secrets["snowflake"]["schema"]
+        )
 
-    return AppConfig(
-        snowflake=snowflake_config,
-        environment=os.getenv("ENVIRONMENT", "development")
-    ) 
+        return AppConfig(
+            snowflake=snowflake_config,
+            environment=st.secrets.get("environment", "development")
+        )
+    except Exception as e:
+        st.error(f"Failed to load configuration: {str(e)}")
+        st.info("Please ensure your .streamlit/secrets.toml file is properly configured")
+        raise 

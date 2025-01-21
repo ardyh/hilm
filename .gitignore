@@ -5,3 +5,4 @@ cases_output/
 docs/
 mock_data/
 data/sessions/
+.streamlit/secrets.toml
